@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ringside Legacy Collectibles</title>
+<style>
+  :root{
+    --ink:#0b0b0e;
+    --ink-2:#151318;
+    --rope-red:#c8102e;
+    --title-gold:#c9a227;
+    --vega-magenta:#e31c79;
+    --paper:#f4efe4;
+    --paper-dim:#c9c3b4;
+    --radius:2px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Arial Narrow', Arial, sans-serif;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  body{font-family: Impact, 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif; font-weight:400;}
+  body, p, .card-body h4, nav.links, .cart-btn, .btn, .add-btn, .chip, .checkout-btn, .modal-add{
+    font-family: 'Arial Narrow', Arial, Helvetica, sans-serif;
+  }
+  h1,h2,h3,.display,.brand,.marquee-mark{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+  }
+  .mono{font-family: 'Courier New', Courier, monospace;}
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+
+  /* ---------- rope divider signature element ---------- */
+  .rope{
+    height:10px;
+    width:100%;
+    background:
+      repeating-linear-gradient(90deg,
+        var(--rope-red) 0 40px,
+        var(--title-gold) 40px 80px);
+    position:relative;
+    opacity:0.9;
+  }
+  .rope::before, .rope::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    height:2px;
+    background:rgba(0,0,0,0.35);
+  }
+  .rope::before{top:2px;}
+  .rope::after{bottom:2px;}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(11,11,14,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(244,239,228,0.08);
+  }
+  .nav-wrap{
+    max-width:1200px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px;
+  }
+  .brand{
+    font-family:Impact, Haettenschweiler, sans-serif;
+    font-size:22px;
+    letter-spacing:0.02em;
+    display:flex; align-items:baseline; gap:8px;
+  }
+  .brand .accent{color:var(--vega-magenta);}
+  nav.links{display:flex; gap:28px; font-size:14px; letter-spacing:0.08em; text-transform:uppercase;}
+  nav.links a{opacity:0.85; transition:opacity .2s, color .2s;}
+  nav.links a:hover{opacity:1; color:var(--title-gold);}
+  .cart-btn{
+    position:relative;
+    background:var(--rope-red);
+    color:var(--paper);
+    border:none;
+    padding:10px 18px;
+    font-family:'Arial Narrow', Arial, sans-serif;
+    font-weight:600;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    font-size:13px;
+    cursor:pointer;
+    border-radius:var(--radius);
+    transition:transform .15s, background .2s;
+  }
+  .cart-btn:hover{background:#a90d24; transform:translateY(-1px);}
+  .cart-btn:focus-visible, a:focus-visible, button:focus-visible, select:focus-visible{
+    outline:3px solid var(--title-gold); outline-offset:2px;
+  }
+  .cart-count{
+    position:absolute; top:-8px; right:-8px;
+    background:var(--title-gold); color:var(--ink);
+    font-size:11px; font-weight:700;
+    width:20px; height:20px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Courier New', monospace;
+  }
+  .menu-toggle{display:none; background:none; border:none; color:var(--paper); font-size:26px; cursor:pointer;}
+  .icon-btn{
+    position:relative; background:transparent; border:1px solid rgba(244,239,228,0.25);
+    color:var(--vega-magenta); width:40px; height:40px; border-radius:var(--radius);
+    font-size:16px; cursor:pointer; transition:border-color .2s;
+  }
+  .icon-btn:hover{border-color:var(--vega-magenta);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    min-height:78vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:80px 20px 60px;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 20%, rgba(227,28,121,0.28), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(200,16,46,0.18), transparent 70%),
+      var(--ink);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(244,239,228,0.035) 0 1px, transparent 1px 90px);
+    pointer-events:none;
+  }
+  .spotlight-beam{
+    position:absolute; top:-20%; left:50%; transform:translateX(-50%);
+    width:900px; height:900px;
+    background:conic-gradient(from 200deg at 50% 0%, transparent 0deg, rgba(244,239,228,0.06) 15deg, transparent 30deg);
+    animation:sweep 10s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+  @keyframes sweep{ from{transform:translateX(-50%) rotate(-6deg);} to{transform:translateX(-50%) rotate(6deg);} }
+  .eyebrow{
+    font-family:'Courier New', monospace; font-size:13px; letter-spacing:0.25em;
+    text-transform:uppercase; color:var(--title-gold); margin-bottom:18px;
+    position:relative; z-index:1;
+  }
+  .hero h1{
+    font-size:clamp(48px, 9vw, 108px);
+    line-height:0.92;
+    position:relative; z-index:1;
+    text-shadow:0 0 40px rgba(227,28,121,0.35);
+  }
+  .hero h1 .line2{color:var(--vega-magenta);}
+  .hero p{
+    max-width:560px; margin:26px auto 0;
+    font-size:17px; line-height:1.6; color:var(--paper-dim);
+    position:relative; z-index:1;
+  }
+  .hero-ctas{margin-top:36px; display:flex; gap:16px; justify-content:center; flex-wrap:wrap; position:relative; z-index:1;}
+  .btn{
+    padding:14px 30px; font-size:14px; font-weight:600; letter-spacing:0.08em;
+    text-transform:uppercase; cursor:pointer; border-radius:var(--radius);
+    transition:transform .15s, background .2s, color .2s;
+    display:inline-block;
+  }
+  .btn-primary{background:var(--vega-magenta); color:var(--paper); border:1px solid var(--vega-magenta);}
+  .btn-primary:hover{transform:translateY(-2px); background:#c91569;}
+  .btn-ghost{background:transparent; color:var(--paper); border:1px solid rgba(244,239,228,0.35);}
+  .btn-ghost:hover{border-color:var(--title-gold); color:var(--title-gold);}
+
+  /* ---------- section shell ---------- */
+  section{padding:90px 20px;}
+  .section-inner{max-width:1200px; margin:0 auto;}
+  .section-head{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    margin-bottom:44px; flex-wrap:wrap; gap:16px;
+  }
+  .section-head .tag{
+    font-family:'Courier New', monospace; font-size:12px; letter-spacing:0.2em;
+    color:var(--vega-magenta); text-transform:uppercase; margin-bottom:10px; display:block;
+  }
+  .section-head h2{font-size:clamp(30px, 4vw, 46px);}
+  .section-head p{color:var(--paper-dim); max-width:420px; font-size:15px; line-height:1.6;}
+
+  /* ---------- featured wrestler / marquee card ---------- */
+  .marquee-card{
+    display:grid; grid-template-columns:1fr 1.1fr; gap:0;
+    background:var(--ink-2);
+    border:1px solid rgba(244,239,228,0.08);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .marquee-art{
+    position:relative;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(227,28,121,0.5), transparent 55%),
+      radial-gradient(circle at 80% 80%, rgba(201,162,39,0.35), transparent 55%),
+      linear-gradient(160deg, #1a0d14, #0b0b0e 70%);
+    min-height:340px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .marquee-mark{
+    font-family:Impact, Haettenschweiler, sans-serif; font-size:120px; color:rgba(244,239,228,0.08);
+    letter-spacing:0.02em;
+  }
+  #marqueeArt svg{width:55% !important; height:55% !important; min-width:0 !important; max-width:220px !important;}
+  .marquee-body{padding:44px;}
+  .marquee-body .tag{font-family:'Courier New', monospace; font-size:12px; color:var(--title-gold); letter-spacing:0.18em; text-transform:uppercase;}
+  .marquee-body h3{font-size:clamp(28px,3.4vw,40px); margin:12px 0 16px;}
+  .marquee-body p{color:var(--paper-dim); line-height:1.7; font-size:15px; margin-bottom:26px;}
+
+  /* ---------- product grid ---------- */
+  .filter-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:36px;}
+  .chip{
+    font-family:'Courier New', monospace; font-size:12px; letter-spacing:0.05em;
+    padding:8px 16px; border:1px solid rgba(244,239,228,0.2); border-radius:20px;
+    background:transparent; color:var(--paper-dim); cursor:pointer; transition:all .2s;
+  }
+  .chip.active, .chip:hover{border-color:var(--vega-magenta); color:var(--paper); background:rgba(227,28,121,0.12);}
+
+  .shop-controls{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:22px; align-items:center;}
+  .search-input{
+    flex:1; min-width:180px; background:var(--ink-2); border:1px solid rgba(244,239,228,0.15);
+    color:var(--paper); padding:11px 14px; font-size:14px; border-radius:var(--radius);
+    font-family:'Arial Narrow', Arial, sans-serif;
+  }
+  .search-input::placeholder{color:var(--paper-dim);}
+  .sort-select{
+    background:var(--ink-2); border:1px solid rgba(244,239,228,0.15); color:var(--paper);
+    padding:11px 14px; font-size:13px; border-radius:var(--radius); font-family:'Courier New', monospace;
+    cursor:pointer;
+  }
+  .no-results{color:var(--paper-dim); padding:60px 0; text-align:center; grid-column:1/-1;}
+
+  .bundle-card{
+    background:var(--ink-2); border:1px solid rgba(244,239,228,0.08); border-radius:var(--radius);
+    padding:22px; display:flex; flex-direction:column; gap:14px;
+  }
+  .bundle-avatars{display:flex; gap:0;}
+  .bundle-avatars > div{
+    width:50%; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+    border-radius:var(--radius); overflow:hidden;
+  }
+  .bundle-card h4{font-size:18px; font-family:'Arial Narrow', Arial, sans-serif; font-weight:700; text-transform:none;}
+  .bundle-card .wrestler{font-family:'Courier New', monospace; font-size:11px; color:var(--title-gold); letter-spacing:0.1em; text-transform:uppercase;}
+  .bundle-card .includes{font-size:13px; color:var(--paper-dim); line-height:1.5;}
+  .bundle-price-row{display:flex; align-items:baseline; gap:10px;}
+  .bundle-price-row .orig{font-family:'Courier New', monospace; font-size:14px; color:var(--paper-dim); text-decoration:line-through;}
+  .bundle-price-row .now{font-family:'Courier New', monospace; font-size:20px; font-weight:600; color:var(--paper);}
+  .bundle-save{font-size:11px; color:var(--vega-magenta); font-family:'Courier New', monospace; text-transform:uppercase; letter-spacing:0.05em;}
+  .bundle-add{
+    background:var(--vega-magenta); color:var(--paper); border:none; padding:12px; font-size:13px;
+    letter-spacing:0.06em; text-transform:uppercase; font-weight:600; cursor:pointer; border-radius:var(--radius);
+    font-family:'Arial Narrow', Arial, sans-serif;
+  }
+  .bundle-add:hover{background:#c91569;}
+  .bundle-tag{font-family:'Courier New', monospace; font-size:10px; color:var(--vega-magenta);}
+
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:24px;
+  }
+  .card{
+    background:var(--ink-2);
+    border:1px solid rgba(244,239,228,0.08);
+    border-radius:var(--radius);
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    transition:transform .2s, border-color .2s;
+  }
+  .card:hover{transform:translateY(-4px); border-color:rgba(227,28,121,0.4);}
+  .card-art{
+    aspect-ratio:4/3;
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .card-art span.initials{
+    font-family:Impact, Haettenschweiler, sans-serif; font-size:54px; color:rgba(244,239,228,0.85); z-index:1;
+    text-shadow:0 2px 12px rgba(0,0,0,0.4);
+  }
+  .badge{
+    position:absolute; top:10px; left:10px; z-index:2;
+    font-family:'Courier New', monospace; font-size:10px; letter-spacing:0.08em;
+    background:var(--title-gold); color:var(--ink); padding:4px 8px; border-radius:2px;
+    text-transform:uppercase; font-weight:600;
+  }
+  .stock-badge{
+    position:absolute; top:10px; right:10px; z-index:2;
+    font-family:'Courier New', monospace; font-size:10px; letter-spacing:0.05em;
+    background:rgba(200,16,46,0.9); color:var(--paper); padding:4px 8px; border-radius:2px;
+    text-transform:uppercase; font-weight:600;
+  }
+  .wish-btn{
+    position:absolute; bottom:10px; right:10px; z-index:2;
+    background:rgba(11,11,14,0.6); border:1px solid rgba(244,239,228,0.3);
+    color:var(--paper); width:32px; height:32px; border-radius:50%;
+    cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center;
+    transition:all .2s;
+  }
+  .wish-btn.active{color:var(--vega-magenta); border-color:var(--vega-magenta); background:rgba(227,28,121,0.15);}
+  .rating{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--paper-dim); margin-bottom:2px;}
+  .stars{color:var(--title-gold); letter-spacing:1px;}
+  .card-body{padding:18px 18px 20px; display:flex; flex-direction:column; gap:6px; flex:1;}
+  .card-body .wrestler{font-family:'Courier New', monospace; font-size:11px; color:var(--title-gold); letter-spacing:0.1em; text-transform:uppercase;}
+  .card-body h4{font-size:19px; font-family:'Arial Narrow', Arial, sans-serif; font-weight:600; text-transform:none; letter-spacing:0; line-height:1.25;}
+  .card-body .desc{font-size:13px; color:var(--paper-dim); line-height:1.5; margin-bottom:8px;}
+  .card-foot{display:flex; align-items:center; justify-content:space-between; margin-top:auto;}
+  .price{font-family:'Courier New', monospace; font-size:18px; color:var(--paper); font-weight:600;}
+  .add-btn{
+    background:transparent; border:1px solid var(--vega-magenta); color:var(--vega-magenta);
+    padding:9px 16px; font-size:12px; letter-spacing:0.06em; text-transform:uppercase;
+    cursor:pointer; border-radius:var(--radius); transition:all .2s; font-family:'Arial Narrow', Arial, sans-serif; font-weight:600;
+  }
+  .add-btn:hover{background:var(--vega-magenta); color:var(--paper);}
+
+  /* ---------- trust strip ---------- */
+  .trust{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:1px;
+    background:rgba(244,239,228,0.08);
+    border:1px solid rgba(244,239,228,0.08);
+  }
+  .trust-item{background:var(--ink); padding:30px 26px;}
+  .trust-item .mono{font-size:11px; color:var(--vega-magenta); letter-spacing:0.15em; text-transform:uppercase; display:block; margin-bottom:8px;}
+  .trust-item p{font-size:14px; color:var(--paper-dim); line-height:1.6;}
+
+  /* ---------- footer ---------- */
+  footer{padding:60px 20px 40px; border-top:1px solid rgba(244,239,228,0.08);}
+  .footer-inner{max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px;}
+  .footer-inner .brand{margin-bottom:8px;}
+  footer p{color:var(--paper-dim); font-size:13px; max-width:340px; line-height:1.6;}
+  .footer-links{display:flex; gap:40px; flex-wrap:wrap;}
+  .footer-links h5{font-family:'Courier New', monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--title-gold); margin-bottom:12px;}
+  .footer-links a{display:block; font-size:14px; color:var(--paper-dim); margin-bottom:8px; transition:color .2s;}
+  .footer-links a:hover{color:var(--paper);}
+
+  /* ---------- cart drawer ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:90;
+    opacity:0; pointer-events:none; transition:opacity .25s;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:fixed; top:0; right:0; height:100%; width:min(420px, 100%);
+    background:var(--ink-2); z-index:100;
+    transform:translateX(100%); transition:transform .3s ease;
+    display:flex; flex-direction:column;
+    border-left:1px solid rgba(244,239,228,0.1);
+  }
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{
+    padding:22px 22px; display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid rgba(244,239,228,0.08);
+  }
+  .drawer-head h3{font-size:20px;}
+  .close-btn{background:none; border:none; color:var(--paper); font-size:24px; cursor:pointer; line-height:1;}
+  .drawer-items{flex:1; overflow-y:auto; padding:16px 22px;}
+  .drawer-empty{color:var(--paper-dim); font-size:14px; padding:40px 0; text-align:center;}
+  .drawer-item{
+    display:flex; gap:14px; padding:14px 0; border-bottom:1px solid rgba(244,239,228,0.06);
+  }
+  .drawer-item .thumb{
+    width:60px; height:60px; border-radius:2px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:Impact, Haettenschweiler, sans-serif; font-size:20px; color:rgba(244,239,228,0.85);
+  }
+  .drawer-item .info{flex:1;}
+  .drawer-item .info h5{font-size:14px; font-weight:600; font-family:'Arial Narrow', Arial, sans-serif; margin-bottom:4px;}
+  .drawer-item .meta{font-size:12px; color:var(--paper-dim); font-family:'Courier New', monospace;}
+  .drawer-item .row{display:flex; align-items:center; justify-content:space-between; margin-top:8px;}
+  .qty-ctrl{display:flex; align-items:center; gap:10px; font-family:'Courier New', monospace; font-size:13px;}
+  .qty-ctrl button{
+    background:rgba(244,239,228,0.08); border:none; color:var(--paper);
+    width:22px; height:22px; border-radius:2px; cursor:pointer; font-size:14px;
+  }
+  .remove-link{font-size:12px; color:var(--rope-red); cursor:pointer; font-family:'Courier New', monospace; background:none; border:none;}
+  .drawer-foot{padding:20px 22px; border-top:1px solid rgba(244,239,228,0.08);}
+  .drawer-foot .row{display:flex; justify-content:space-between; font-size:14px; margin-bottom:6px; color:var(--paper-dim);}
+  .drawer-foot .row.total{font-size:18px; color:var(--paper); font-family:'Courier New', monospace; font-weight:600; margin:14px 0 18px;}
+  .checkout-btn{width:100%; background:var(--vega-magenta); color:var(--paper); border:none; padding:15px; font-size:14px; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; cursor:pointer; border-radius:var(--radius); font-family:'Arial Narrow', Arial, sans-serif;}
+  .checkout-btn:hover{background:#c91569;}
+  .ship-note{font-size:12px; color:var(--paper-dim); text-align:center; margin-top:12px;}
+
+  /* ---------- size modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:110;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .2s;
+    padding:20px;
+  }
+  .modal-overlay.open{opacity:1; pointer-events:auto;}
+  .modal{
+    background:var(--ink-2); border:1px solid rgba(244,239,228,0.1); border-radius:var(--radius);
+    max-width:400px; width:100%; padding:30px; position:relative;
+  }
+  .modal h3{font-size:22px; margin-bottom:6px;}
+  .modal .wrestler{font-family:'Courier New', monospace; font-size:11px; color:var(--title-gold); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:18px; display:block;}
+  .modal label{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--paper-dim); display:block; margin-bottom:10px;}
+  .size-options{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;}
+  .size-opt{
+    padding:9px 14px; border:1px solid rgba(244,239,228,0.25); border-radius:2px;
+    background:transparent; color:var(--paper); cursor:pointer; font-family:'Courier New', monospace; font-size:13px;
+    transition:all .15s;
+  }
+  .size-opt.selected, .size-opt:hover{border-color:var(--vega-magenta); background:rgba(227,28,121,0.15);}
+  .modal-close{position:absolute; top:14px; right:16px; background:none; border:none; color:var(--paper-dim); font-size:22px; cursor:pointer;}
+  .modal-add{width:100%; background:var(--vega-magenta); color:var(--paper); border:none; padding:14px; font-size:14px; letter-spacing:0.06em; text-transform:uppercase; font-weight:600; cursor:pointer; border-radius:var(--radius);}
+  .modal-add:disabled{opacity:0.4; cursor:not-allowed;}
+  .size-chart-link{background:none; border:none; color:var(--vega-magenta); font-size:12px; text-decoration:underline; cursor:pointer; margin-bottom:20px; display:inline-block; font-family:'Arial Narrow', Arial, sans-serif;}
+  .size-table{width:100%; border-collapse:collapse; margin-top:14px; font-size:13px;}
+  .size-table th, .size-table td{border:1px solid rgba(244,239,228,0.12); padding:8px 10px; text-align:center;}
+  .size-table th{background:rgba(244,239,228,0.06); font-family:'Courier New', monospace; font-size:11px; text-transform:uppercase; color:var(--title-gold);}
+
+  /* ---------- newsletter ---------- */
+  .newsletter{
+    background:linear-gradient(135deg, rgba(227,28,121,0.14), rgba(200,16,46,0.08));
+    border-top:1px solid rgba(244,239,228,0.08); border-bottom:1px solid rgba(244,239,228,0.08);
+    text-align:center; padding:70px 20px;
+  }
+  .newsletter h2{font-size:clamp(26px,3.6vw,38px); margin-bottom:12px;}
+  .newsletter p{color:var(--paper-dim); max-width:460px; margin:0 auto 26px; font-size:15px;}
+  .newsletter-form{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; max-width:440px; margin:0 auto;}
+  .newsletter-form input{
+    flex:1; min-width:200px; background:var(--ink-2); border:1px solid rgba(244,239,228,0.2);
+    color:var(--paper); padding:13px 16px; border-radius:var(--radius); font-size:14px;
+    font-family:'Arial Narrow', Arial, sans-serif;
+  }
+
+  /* ---------- about / authenticity ---------- */
+  .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:start;}
+  .about-grid ol{list-style:none; counter-reset:step; display:flex; flex-direction:column; gap:22px;}
+  .about-grid li{counter-increment:step; display:flex; gap:16px;}
+  .about-grid li::before{
+    content:counter(step, decimal-leading-zero);
+    font-family:'Courier New', monospace; font-size:14px; color:var(--vega-magenta);
+    border:1px solid rgba(227,28,121,0.4); width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .about-grid li h4{font-size:16px; margin-bottom:4px; text-transform:none; font-family:'Arial Narrow',Arial,sans-serif; font-weight:700;}
+  .about-grid li p{color:var(--paper-dim); font-size:14px; line-height:1.6;}
+  @media (max-width:820px){ .about-grid{grid-template-columns:1fr;} }
+
+  .toast{
+    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--title-gold); color:var(--ink); padding:13px 24px; border-radius:2px;
+    font-family:'Arial Narrow', Arial, sans-serif; font-weight:600; font-size:14px; letter-spacing:0.03em;
+    z-index:120; opacity:0; transition:all .3s; pointer-events:none;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:820px){
+    nav.links{display:none;}
+    .menu-toggle{display:block;}
+    .marquee-card{grid-template-columns:1fr;}
+    .marquee-art{min-height:220px;}
+  }
+</style>
+<!--
+  PayPal SDK. "client-id=sb" below is PayPal's shared sandbox test ID —
+  it works immediately for testing with no signup. Before going live,
+  replace "sb" with your own Client ID from developer.paypal.com
+  (Apps & Credentials → your app → Client ID).
+-->
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a href="#top" class="brand">RINGSIDE <span class="accent">LEGACY</span></a>
+    <nav class="links">
+      <a href="#featured">Featured</a>
+      <a href="#shop">Shop</a>
+      <a href="#bundles">Bundles</a>
+      <a href="#about">Authenticity</a>
+      <a href="#shipping">Shipping</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="icon-btn" onclick="toggleWishlist(true)" aria-label="Open wishlist">
+        &hearts; <span id="wishCount" class="cart-count" style="display:none;">0</span>
+      </button>
+      <button class="cart-btn" onclick="toggleCart(true)">
+        Cart <span id="cartCount" class="cart-count" style="display:none;">0</span>
+      </button>
+    </div>
+  </div>
+  <div class="rope"></div>
+</header>
+
+<section id="top" class="hero">
+  <div class="spotlight-beam"></div>
+  <div class="eyebrow">Authenticated Ringwear &amp; Memorabilia</div>
+  <h1>Own a piece<br><span class="line2">of the legacy</span></h1>
+  <p>Signed gear, ring-worn inspired apparel, and collector-grade memorabilia celebrating the women who built the business. Shipped worldwide, every piece with a story.</p>
+  <div class="hero-ctas">
+    <a href="#shop" class="btn btn-primary">Shop the Collection</a>
+    <a href="#featured" class="btn btn-ghost">This Week's Spotlight</a>
+  </div>
+</section>
+
+<div class="rope"></div>
+
+<section id="featured">
+  <div class="section-inner">
+    <div class="section-head">
+      <div>
+        <span class="tag">Spotlight</span>
+        <h2>Featured Superstar</h2>
+      </div>
+      <p>A rotating showcase of the women defining the current era — this week, the queen of Lucha and legal counsel of your nightmares.</p>
+    </div>
+    <div class="marquee-card">
+      <div class="marquee-art" id="marqueeArt"></div>
+      <div class="marquee-body">
+        <span class="tag">Now Featured</span>
+        <h3>Zelina Vega Collection</h3>
+        <p>Bug-inspired ring gear replicas, hand-signed poster prints, and championship-run memorabilia — including pieces matching entrance looks worn on the biggest stages. Every autograph is verified before it ships.</p>
+        <a href="#shop" class="btn btn-primary" onclick="filterByWrestler('Zelina Vega')">Shop This Collection</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="section-inner">
+    <div class="section-head">
+      <div>
+        <span class="tag">The Collection</span>
+        <h2>Shop Memorabilia</h2>
+      </div>
+      <p>Filter by category or wrestler. New signed drops added regularly.</p>
+    </div>
+    <div class="shop-controls">
+      <input type="text" class="search-input" id="searchInput" placeholder="Search products or wrestlers…" oninput="onSearch(this.value)">
+      <select class="sort-select" id="sortSelect" onchange="onSort(this.value)">
+        <option value="default">Sort: Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="rating">Highest Rated</option>
+      </select>
+    </div>
+    <div class="filter-row" id="filterRow"></div>
+    <div class="grid" id="productGrid"></div>
+  </div>
+</section>
+
+<div class="rope"></div>
+
+<section id="bundles">
+  <div class="section-inner">
+    <div class="section-head">
+      <div>
+        <span class="tag">Save More</span>
+        <h2>Bundle Deals</h2>
+      </div>
+      <p>Pair a signed poster with matching apparel and save — bundles apply the discount automatically at cart.</p>
+    </div>
+    <div class="grid" id="bundleGrid"></div>
+  </div>
+</section>
+
+<div class="rope"></div>
+
+<section id="shipping">
+  <div class="section-inner">
+    <div class="section-head">
+      <div>
+        <span class="tag">Why Ringside</span>
+        <h2>Built for the Fandom</h2>
+      </div>
+    </div>
+    <div class="trust">
+      <div class="trust-item">
+        <span class="mono">01 / Authenticity</span>
+        <p>Every signed item ships with a verified certificate of authenticity — no exceptions.</p>
+      </div>
+      <div class="trust-item">
+        <span class="mono">02 / Worldwide Shipping</span>
+        <p>We ship to every corner of the globe. Rates and delivery windows shown at checkout by destination.</p>
+      </div>
+      <div class="trust-item">
+        <span class="mono">03 / True to Size</span>
+        <p>Apparel sized true-to-fit with a full size chart on every clothing listing, XS through 3XL.</p>
+      </div>
+      <div class="trust-item">
+        <span class="mono">04 / Fan-First Pricing</span>
+        <p>Collector-grade pieces priced for the everyday fan — most items land right around $30.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rope"></div>
+
+<section id="about">
+  <div class="section-inner">
+    <div class="section-head">
+      <div>
+        <span class="tag">The Process</span>
+        <h2>How We Verify Every Signature</h2>
+      </div>
+      <p>Collecting only works if you can trust what you're holding. Here's exactly how a signed piece gets to your door.</p>
+    </div>
+    <div class="about-grid">
+      <ol>
+        <li>
+          <div>
+            <h4>Sourced directly</h4>
+            <p>Every item is sourced from licensed signing events or verified in-person appearances — never resold from unknown chains of custody.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h4>Witnessed and logged</h4>
+            <p>Each autograph session is logged with photo/video proof at the time of signing.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h4>Certificate issued</h4>
+            <p>A numbered certificate of authenticity is generated and permanently linked to that specific item.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h4>Sealed for shipping</h4>
+            <p>Signed pieces are bagged, boarded, or framed-ready before they ever leave our hands.</p>
+          </div>
+        </li>
+      </ol>
+      <div class="marquee-card" style="grid-template-columns:1fr;">
+        <div class="marquee-art" style="min-height:260px;"><span class="marquee-mark">COA</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="newsletter">
+  <h2>Never Miss a Drop</h2>
+  <p>New signed inventory and limited runs go fast. Get an alert the moment they land.</p>
+  <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+    <input type="email" placeholder="you@example.com" required id="newsletterEmail">
+    <button type="submit" class="btn btn-primary">Notify Me</button>
+  </form>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <a href="#top" class="brand">RINGSIDE <span class="accent">LEGACY</span></a>
+      <p>An independent collector's shop celebrating the women of professional wrestling, past and present.</p>
+    </div>
+    <div class="footer-links">
+      <div>
+        <h5>Shop</h5>
+        <a href="#shop">All Products</a>
+        <a href="#featured">Featured</a>
+      </div>
+      <div>
+        <h5>Info</h5>
+        <a href="#shipping">Shipping &amp; Sizing</a>
+        <a href="#top">Authenticity</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Cart drawer -->
+<div class="overlay" id="overlay" onclick="toggleCart(false)"></div>
+<div class="drawer" id="cartDrawer">
+  <div class="drawer-head">
+    <h3>Your Cart</h3>
+    <button class="close-btn" onclick="toggleCart(false)" aria-label="Close cart">&times;</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-foot">
+    <div class="row"><span>Subtotal</span><span id="subtotal" class="mono">$0.00</span></div>
+    <div class="row total"><span>Total</span><span id="total" class="mono">$0.00</span></div>
+    <div id="paypal-button-container"></div>
+    <p class="drawer-empty" id="emptyCartNote" style="display:none; padding:14px 0 0;">Add something to your cart to check out.</p>
+    <p class="ship-note">Shipping calculated at checkout · Worldwide delivery</p>
+  </div>
+</div>
+
+<!-- Size selection modal -->
+<div class="modal-overlay" id="sizeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSizeModal()" aria-label="Close">&times;</button>
+    <span class="wrestler" id="modalWrestler"></span>
+    <h3 id="modalTitle"></h3>
+    <label>Select Size</label>
+    <div class="size-options" id="sizeOptions"></div>
+    <button class="size-chart-link" onclick="openSizeChart()" type="button">View size chart</button>
+    <button class="modal-add" id="modalAddBtn" disabled onclick="confirmAddToCart()">Add to Cart</button>
+  </div>
+</div>
+
+<!-- Size chart modal -->
+<div class="modal-overlay" id="sizeChartModal">
+  <div class="modal" style="max-width:460px;">
+    <button class="modal-close" onclick="closeSizeChart()" aria-label="Close">&times;</button>
+    <h3>Size Chart</h3>
+    <span class="wrestler">Chest measurement in inches</span>
+    <table class="size-table">
+      <tr><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>2XL</th><th>3XL</th></tr>
+      <tr><td>32-34</td><td>35-37</td><td>38-40</td><td>41-43</td><td>44-46</td><td>47-49</td><td>50-52</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Wishlist drawer -->
+<div class="overlay" id="wishOverlay" onclick="toggleWishlist(false)"></div>
+<div class="drawer" id="wishDrawer">
+  <div class="drawer-head">
+    <h3>Wishlist</h3>
+    <button class="close-btn" onclick="toggleWishlist(false)" aria-label="Close wishlist">&times;</button>
+  </div>
+  <div class="drawer-items" id="wishItems"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PRODUCTS = [
+  {id:'p1', name:'Vega Entrance Jacket', wrestler:'Zelina Vega', category:'Apparel', price:38, initials:'ZV', badge:'Signed', sizes:['XS','S','M','L','XL','2XL'], desc:'Entrance-style bomber inspired by her current ring look. Hand-signed on the collar.', rating:4.8, reviews:142, stock:4},
+  {id:'p2', name:'Championship Run Poster', wrestler:'Zelina Vega', category:'Posters', price:24, initials:'ZV', badge:'Signed', sizes:null, desc:'18x24 print, signed and numbered, matte finish.', rating:4.9, reviews:203, stock:7},
+  {id:'p3', name:'Vega Ring Gear Replica Tee', wrestler:'Zelina Vega', category:'Apparel', price:29, initials:'ZV', badge:null, sizes:['XS','S','M','L','XL','2XL','3XL'], desc:'Soft-spun tee matching her signature entrance colorway.', rating:4.6, reviews:88, stock:null},
+  {id:'p4', name:'Storm Warning Hoodie', wrestler:'Bianca Belair', category:'Apparel', price:44, initials:'BB', badge:'Signed', sizes:['S','M','L','XL','2XL'], desc:'Heavyweight hoodie, hand-signed on the front panel.', rating:4.9, reviews:167, stock:3},
+  {id:'p5', name:'The EST Poster Print', wrestler:'Bianca Belair', category:'Posters', price:22, initials:'BB', badge:null, sizes:null, desc:'16x20 collector print of her title-run entrance.', rating:4.5, reviews:74, stock:null},
+  {id:'p6', name:'Damage CTRL Crop Top', wrestler:'Bayley', category:'Apparel', price:32, initials:'BC', badge:null, sizes:['XS','S','M','L','XL'], desc:'Faction-inspired crop top, ring-worn colorway.', rating:4.4, reviews:56, stock:null},
+  {id:'p7', name:'Role Model Signed Glove', wrestler:'Bayley', category:'Memorabilia', price:35, initials:'BC', badge:'Signed', sizes:null, desc:'Single ring-worn-style glove, hand-signed and bagged.', rating:4.7, reviews:61, stock:2},
+  {id:'p8', name:'Man-Eater Entrance Vest', wrestler:'Rhea Ripley', category:'Apparel', price:41, initials:'RR', badge:null, sizes:['S','M','L','XL','2XL'], desc:'Studded vest replica inspired by her entrance attire.', rating:4.8, reviews:120, stock:null},
+  {id:'p9', name:'Mami Championship Poster', wrestler:'Rhea Ripley', category:'Posters', price:26, initials:'RR', badge:'Signed', sizes:null, desc:'24x36 print, hand-signed, ships in a rigid mailer.', rating:4.9, reviews:189, stock:5},
+  {id:'p10', name:'Genius of the Sky Tee', wrestler:'Asuka', category:'Apparel', price:27, initials:'AS', badge:null, sizes:['XS','S','M','L','XL','2XL'], desc:'Mist-motif graphic tee, soft cotton blend.', rating:4.5, reviews:49, stock:null},
+  {id:'p11', name:'Asuka Signed Mask Print', wrestler:'Asuka', category:'Memorabilia', price:30, initials:'AS', badge:'Signed', sizes:null, desc:'Framed-ready art print, hand-signed lower corner.', rating:4.7, reviews:93, stock:6},
+  {id:'p12', name:'Timeless Toni Windbreaker', wrestler:'Toni Storm', category:'Apparel', price:39, initials:'TS', badge:null, sizes:['S','M','L','XL'], desc:'Vintage-cut windbreaker with old-Hollywood trim detail.', rating:4.6, reviews:41, stock:null},
+  {id:'p13', name:'Iyo Sky Signed Poster', wrestler:'Iyo Sky', category:'Posters', price:25, initials:'IS', badge:'Signed', sizes:null, desc:'High-flyer action shot print, hand-signed, numbered edition.', rating:4.8, reviews:77, stock:8},
+  {id:'p14', name:'Genius Championship Tee', wrestler:'Iyo Sky', category:'Apparel', price:28, initials:'IS', badge:null, sizes:['XS','S','M','L','XL'], desc:'Title-run graphic tee in her signature colorway.', rating:4.5, reviews:38, stock:null},
+  {id:'p15', name:'Judgment Day Signed Chain', wrestler:'Liv Morgan', category:'Memorabilia', price:33, initials:'LM', badge:'Signed', sizes:null, desc:'Replica entrance chain necklace, hand-signed tag included.', rating:4.6, reviews:52, stock:3},
+  {id:'p16', name:'Liv Morgan Poster Print', wrestler:'Liv Morgan', category:'Posters', price:23, initials:'LM', badge:null, sizes:null, desc:'18x24 entrance-moment print on matte stock.', rating:4.4, reviews:35, stock:null},
+  {id:'p17', name:'The Man Signed Vest', wrestler:'Becky Lynch', category:'Apparel', price:42, initials:'BL', badge:'Signed', sizes:['S','M','L','XL','2XL'], desc:'Championship-era vest replica, hand-signed on the lapel.', rating:4.9, reviews:210, stock:2},
+  {id:'p18', name:'Becky Lynch Title Poster', wrestler:'Becky Lynch', category:'Posters', price:24, initials:'BL', badge:'Signed', sizes:null, desc:'24x36 title-win print, signed and numbered.', rating:4.8, reviews:154, stock:4},
+  {id:'p19', name:'Queen Flair Signed Robe', wrestler:'Charlotte Flair', category:'Apparel', price:46, initials:'CF', badge:'Signed', sizes:['S','M','L','XL','2XL'], desc:'Regal entrance robe replica, hand-signed on the collar.', rating:4.7, reviews:98, stock:3},
+  {id:'p20', name:'16x Champion Poster', wrestler:'Charlotte Flair', category:'Posters', price:26, initials:'CF', badge:'Signed', sizes:null, desc:'Championship-count commemorative print, signed and numbered.', rating:4.8, reviews:131, stock:5},
+  {id:'p21', name:'Glow Entrance Jacket', wrestler:'Naomi', category:'Apparel', price:37, initials:'NA', badge:null, sizes:['XS','S','M','L','XL'], desc:'Glow-motif entrance jacket replica in her signature colorway.', rating:4.5, reviews:44, stock:null},
+  {id:'p22', name:'Naomi Signed Poster', wrestler:'Naomi', category:'Posters', price:23, initials:'NA', badge:'Signed', sizes:null, desc:'18x24 print, hand-signed, ships in a rigid mailer.', rating:4.6, reviews:57, stock:6},
+  {id:'p23', name:'Chelsea Green Tour Tee', wrestler:'Chelsea Green', category:'Apparel', price:28, initials:'CG', badge:null, sizes:['XS','S','M','L','XL','2XL'], desc:'Comedic-heel graphic tee, soft cotton blend.', rating:4.4, reviews:33, stock:null},
+  {id:'p24', name:'Green With Envy Signed Poster', wrestler:'Chelsea Green', category:'Posters', price:22, initials:'CG', badge:'Signed', sizes:null, desc:'16x20 print, signed and numbered.', rating:4.5, reviews:29, stock:7},
+  {id:'p25', name:'Irresistible Force Hoodie', wrestler:'Nia Jax', category:'Apparel', price:43, initials:'NJ', badge:'Signed', sizes:['M','L','XL','2XL','3XL'], desc:'Heavyweight hoodie, hand-signed on the front panel.', rating:4.6, reviews:47, stock:2},
+  {id:'p26', name:'Nia Jax Championship Poster', wrestler:'Nia Jax', category:'Posters', price:25, initials:'NJ', badge:null, sizes:null, desc:'24x36 title-run print on matte stock.', rating:4.5, reviews:38, stock:null},
+  {id:'p27', name:'Stratusfaction Signed Vest', wrestler:'Trish Stratus', category:'Apparel', price:45, initials:'TS', badge:'Signed', sizes:['S','M','L','XL'], desc:'Hall of Fame era vest replica, hand-signed on the lapel.', rating:4.9, reviews:176, stock:3},
+  {id:'p28', name:'Trish Stratus Icon Poster', wrestler:'Trish Stratus', category:'Posters', price:26, initials:'TS', badge:'Signed', sizes:null, desc:'24x36 career-retrospective print, signed and numbered.', rating:4.8, reviews:140, stock:5},
+  {id:'p29', name:'Legit Signed Tank', wrestler:'Lita', category:'Apparel', price:34, initials:'LT', badge:'Signed', sizes:['XS','S','M','L','XL'], desc:'Punk-inspired entrance tank replica, hand-signed on the hem.', rating:4.8, reviews:112, stock:4},
+  {id:'p30', name:'Lita Hardcore Poster', wrestler:'Lita', category:'Posters', price:23, initials:'LT', badge:null, sizes:null, desc:'18x24 archival print from her title-run era.', rating:4.6, reviews:67, stock:null},
+  {id:'p31', name:'Twisted Bliss Hoodie', wrestler:'Alexa Bliss', category:'Apparel', price:39, initials:'AB', badge:null, sizes:['XS','S','M','L','XL'], desc:'Pastel-goth entrance hoodie replica in her signature palette.', rating:4.7, reviews:83, stock:null},
+  {id:'p32', name:'Alexa Bliss Signed Poster', wrestler:'Alexa Bliss', category:'Posters', price:24, initials:'AB', badge:'Signed', sizes:null, desc:'18x24 print, hand-signed, ships in a rigid mailer.', rating:4.7, reviews:96, stock:6},
+  {id:'p33', name:'That Bitch Signed Jacket', wrestler:'Jade Cargill', category:'Apparel', price:42, initials:'JC', badge:'Signed', sizes:['S','M','L','XL','2XL'], desc:'Metallic entrance jacket replica, hand-signed on the collar.', rating:4.8, reviews:71, stock:2},
+  {id:'p34', name:'Jade Cargill Undefeated Poster', wrestler:'Jade Cargill', category:'Posters', price:25, initials:'JC', badge:null, sizes:null, desc:'24x36 streak-era commemorative print.', rating:4.6, reviews:52, stock:null},
+];
+
+const BUNDLES = [
+  {id:'b1', name:'Vega Starter Bundle', wrestler:'Zelina Vega', items:['p1','p2'], discount:0.15},
+  {id:'b2', name:'Ripley Champion Bundle', wrestler:'Rhea Ripley', items:['p8','p9'], discount:0.15},
+  {id:'b3', name:'Belair Signature Bundle', wrestler:'Bianca Belair', items:['p4','p5'], discount:0.15},
+  {id:'b4', name:'Stratus Legacy Bundle', wrestler:'Trish Stratus', items:['p27','p28'], discount:0.15},
+];
+
+let cart = [];
+let wishlist = [];
+let pendingProduct = null;
+let pendingBundle = null;
+let selectedSize = null;
+let searchTerm = '';
+let sortMode = 'default';
+
+function initials(name){
+  return name.split(' ').map(w=>w[0]).join('').slice(0,3).toUpperCase();
+}
+
+function starString(rating){
+  const full = Math.round(rating);
+  return '★'.repeat(full) + '☆'.repeat(5 - full);
+}
+
+function avatarSVG(hue){
+  const c1 = `hsl(${hue},65%,42%)`;
+  const c2 = `hsl(${(hue+45)%360},70%,55%)`;
+  return `<svg viewBox="0 0 120 120" width="30%" height="30%" style="min-width:72px; min-height:72px; max-width:96px;" aria-hidden="true">
+    <polygon points="60,10 104,38 100,88 60,114 20,88 16,38" fill="${c1}" opacity="0.95"/>
+    <polygon points="60,10 104,38 100,88 60,114 20,88 16,38" fill="none" stroke="rgba(244,239,228,0.35)" stroke-width="2"/>
+    <polygon points="22,50 60,34 98,50 98,64 60,50 22,64" fill="${c2}"/>
+    <polygon points="34,60 50,54 50,70 34,76" fill="#0b0b0e"/>
+    <polygon points="70,54 86,60 86,76 70,70" fill="#0b0b0e"/>
+    <polygon points="46,92 60,86 74,92 60,98" fill="rgba(244,239,228,0.5)"/>
+  </svg>`;
+}
+
+function cardColor(id){
+  const hue = (id.charCodeAt(1)*47) % 360;
+  return `radial-gradient(circle at 30% 20%, hsla(${hue},70%,45%,0.55), transparent 55%), radial-gradient(circle at 80% 80%, hsla(${(hue+140)%360},60%,40%,0.4), transparent 55%), linear-gradient(160deg, #1a0d14, #0b0b0e 70%)`;
+}
+
+function cardHue(id){
+  return (id.charCodeAt(1)*47) % 360;
+}
+
+function renderFilters(){
+  const cats = ['All', ...new Set(PRODUCTS.map(p=>p.category))];
+  const row = document.getElementById('filterRow');
+  row.innerHTML = cats.map(c => `<button class="chip ${c==='All'?'active':''}" data-cat="${c}" onclick="filterByCategory('${c}', this)">${c}</button>`).join('');
+}
+
+let activeCategory = 'All';
+let activeWrestler = null;
+
+function filterByCategory(cat, el){
+  activeCategory = cat;
+  activeWrestler = null;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderProducts();
+}
+
+function filterByWrestler(name){
+  activeWrestler = name;
+  activeCategory = 'All';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  renderProducts();
+}
+
+function onSearch(val){
+  searchTerm = val.trim().toLowerCase();
+  renderProducts();
+}
+
+function onSort(val){
+  sortMode = val;
+  renderProducts();
+}
+
+function renderProducts(){
+  const grid = document.getElementById('productGrid');
+  let list = PRODUCTS.slice();
+  if(activeCategory !== 'All') list = list.filter(p=>p.category===activeCategory);
+  if(activeWrestler) list = list.filter(p=>p.wrestler===activeWrestler);
+  if(searchTerm){
+    list = list.filter(p =>
+      p.name.toLowerCase().includes(searchTerm) ||
+      p.wrestler.toLowerCase().includes(searchTerm) ||
+      p.category.toLowerCase().includes(searchTerm)
+    );
+  }
+  if(sortMode === 'price-asc') list.sort((a,b)=>a.price-b.price);
+  if(sortMode === 'price-desc') list.sort((a,b)=>b.price-a.price);
+  if(sortMode === 'rating') list.sort((a,b)=>b.rating-a.rating);
+
+  if(list.length === 0){
+    grid.innerHTML = `<div class="no-results">No products match "${searchTerm}". Try another search or filter.</div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(p => `
+    <div class="card">
+      <div class="card-art" style="background:${cardColor(p.id)}">
+        ${p.badge ? `<span class="badge">${p.badge}</span>` : ''}
+        ${p.stock ? `<span class="stock-badge">Only ${p.stock} left</span>` : ''}
+        ${avatarSVG(cardHue(p.id))}
+        <button class="wish-btn ${wishlist.includes(p.id) ? 'active' : ''}" onclick="toggleWish('${p.id}', this)" aria-label="Toggle wishlist">&hearts;</button>
+      </div>
+      <div class="card-body">
+        <span class="wrestler">${p.wrestler}</span>
+        <h4>${p.name}</h4>
+        <div class="rating"><span class="stars">${starString(p.rating)}</span> ${p.rating} (${p.reviews})</div>
+        <p class="desc">${p.desc}</p>
+        <div class="card-foot">
+          <span class="price">$${p.price.toFixed(2)}</span>
+          <button class="add-btn" onclick="startAdd('${p.id}')">${p.sizes ? 'Select Size' : 'Add to Cart'}</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleWish(id, el){
+  const idx = wishlist.indexOf(id);
+  if(idx === -1){
+    wishlist.push(id);
+    if(el) el.classList.add('active');
+    showToast('Added to wishlist');
+  } else {
+    wishlist.splice(idx, 1);
+    if(el) el.classList.remove('active');
+    showToast('Removed from wishlist');
+  }
+  renderWishlistDrawer();
+}
+
+function renderWishlistDrawer(){
+  const wrap = document.getElementById('wishItems');
+  const countEl = document.getElementById('wishCount');
+  countEl.textContent = wishlist.length;
+  countEl.style.display = wishlist.length > 0 ? 'flex' : 'none';
+
+  if(wishlist.length === 0){
+    wrap.innerHTML = `<div class="drawer-empty">No favorites yet.<br>Tap the heart on any item to save it.</div>`;
+    return;
+  }
+  wrap.innerHTML = wishlist.map(id => {
+    const p = PRODUCTS.find(x=>x.id===id);
+    return `
+      <div class="drawer-item">
+        <div class="thumb" style="background:${cardColor(p.id)}">${avatarSVG(cardHue(p.id))}</div>
+        <div class="info">
+          <h5>${p.name}</h5>
+          <div class="meta">${p.wrestler} · $${p.price.toFixed(2)}</div>
+          <div class="row">
+            <button class="add-btn" style="padding:6px 12px; font-size:11px;" onclick="startAdd('${p.id}')">${p.sizes ? 'Select Size' : 'Add to Cart'}</button>
+            <button class="remove-link" onclick="toggleWish('${p.id}'); renderWishlistDrawer();">Remove</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleWishlist(open){
+  document.getElementById('wishDrawer').classList.toggle('open', open);
+  document.getElementById('wishOverlay').classList.toggle('open', open);
+}
+
+function renderBundles(){
+  const grid = document.getElementById('bundleGrid');
+  grid.innerHTML = BUNDLES.map(b => {
+    const items = b.items.map(id => PRODUCTS.find(p=>p.id===id));
+    const orig = items.reduce((a,p)=>a+p.price,0);
+    const discounted = orig * (1 - b.discount);
+    return `
+      <div class="bundle-card">
+        <div class="bundle-avatars">
+          <div style="background:${cardColor(items[0].id)}">${avatarSVG(cardHue(items[0].id))}</div>
+          <div style="background:${cardColor(items[1].id)}">${avatarSVG(cardHue(items[1].id))}</div>
+        </div>
+        <div>
+          <span class="wrestler">${b.wrestler}</span>
+          <h4>${b.name}</h4>
+          <p class="includes">${items.map(p=>p.name).join(' + ')}</p>
+        </div>
+        <div class="bundle-price-row">
+          <span class="orig">$${orig.toFixed(2)}</span>
+          <span class="now">$${discounted.toFixed(2)}</span>
+        </div>
+        <span class="bundle-save">Save ${Math.round(b.discount*100)}%</span>
+        <button class="bundle-add" onclick="addBundleToCart('${b.id}')">Add Bundle to Cart</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function addBundleToCart(bundleId){
+  const b = BUNDLES.find(x=>x.id===bundleId);
+  const items = b.items.map(id => PRODUCTS.find(p=>p.id===id));
+  items.forEach(p => {
+    if(p.sizes){
+      // sized items go through the normal size-select flow, tagged as part of this bundle
+      pendingBundle = b;
+      openSizeModal(p);
+      return;
+    }
+    addBundleItem(p, null, b);
+  });
+  if(!items.some(p=>p.sizes)) showToast(`${b.name} added to cart`);
+}
+
+function addBundleItem(p, size, b){
+  const discountedPrice = p.price * (1 - b.discount);
+  const key = p.id + (size || '') + '-bundle-' + b.id;
+  const existing = cart.find(c => c.key === key);
+  if(existing){
+    existing.qty += 1;
+  } else {
+    cart.push({key, id:p.id, name:p.name, wrestler:p.wrestler, price:discountedPrice, size, qty:1, initials:p.initials, color:cardColor(p.id), bundleName:b.name});
+  }
+  renderCart();
+}
+
+function openSizeChart(){
+  document.getElementById('sizeChartModal').classList.add('open');
+}
+function closeSizeChart(){
+  document.getElementById('sizeChartModal').classList.remove('open');
+}
+
+function subscribeNewsletter(e){
+  e.preventDefault();
+  const email = document.getElementById('newsletterEmail').value;
+  showToast(`You're on the list — we'll email ${email} about new drops`);
+  document.getElementById('newsletterEmail').value = '';
+}
+
+function startAdd(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  pendingBundle = null;
+  if(p.sizes){
+    openSizeModal(p);
+  } else {
+    addToCart(p, null);
+  }
+}
+
+function openSizeModal(p){
+  pendingProduct = p;
+  selectedSize = null;
+  document.getElementById('modalWrestler').textContent = p.wrestler;
+  document.getElementById('modalTitle').textContent = p.name;
+  document.getElementById('sizeOptions').innerHTML = p.sizes.map(s=>`<button class="size-opt" data-size="${s}" onclick="pickSize('${s}', this)">${s}</button>`).join('');
+  document.getElementById('modalAddBtn').disabled = true;
+  document.getElementById('sizeModal').classList.add('open');
+}
+
+function pickSize(s, el){
+  selectedSize = s;
+  document.querySelectorAll('.size-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('modalAddBtn').disabled = false;
+}
+
+function closeSizeModal(){
+  document.getElementById('sizeModal').classList.remove('open');
+  pendingProduct = null;
+  pendingBundle = null;
+}
+
+function confirmAddToCart(){
+  if(pendingProduct && selectedSize){
+    if(pendingBundle){
+      addBundleItem(pendingProduct, selectedSize, pendingBundle);
+      showToast(`${pendingBundle.name} added to cart`);
+    } else {
+      addToCart(pendingProduct, selectedSize);
+    }
+    closeSizeModal();
+  }
+}
+
+function addToCart(p, size){
+  const key = p.id + (size || '');
+  const existing = cart.find(c => c.key === key);
+  if(existing){
+    existing.qty += 1;
+  } else {
+    cart.push({key, id:p.id, name:p.name, wrestler:p.wrestler, price:p.price, size, qty:1, initials:p.initials, color:cardColor(p.id)});
+  }
+  renderCart();
+  showToast(`${p.name}${size ? ' ('+size+')' : ''} added to cart`);
+}
+
+function changeQty(key, delta){
+  const item = cart.find(c=>c.key===key);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty <= 0) cart = cart.filter(c=>c.key!==key);
+  renderCart();
+}
+
+function removeItem(key){
+  cart = cart.filter(c=>c.key!==key);
+  renderCart();
+}
+
+function renderCart(){
+  const wrap = document.getElementById('drawerItems');
+  const count = cart.reduce((a,c)=>a+c.qty,0);
+  const countEl = document.getElementById('cartCount');
+  countEl.textContent = count;
+  countEl.style.display = count > 0 ? 'flex' : 'none';
+
+  if(cart.length === 0){
+    wrap.innerHTML = `<div class="drawer-empty">Your cart is empty.<br>Time to find something signed.</div>`;
+  } else {
+    wrap.innerHTML = cart.map(c => `
+      <div class="drawer-item">
+        <div class="thumb" style="background:${c.color}">${avatarSVG(cardHue(c.id))}</div>
+        <div class="info">
+          <h5>${c.name}</h5>
+          <div class="meta">${c.wrestler}${c.size ? ' · Size ' + c.size : ''}</div>
+          ${c.bundleName ? `<div class="bundle-tag">Part of: ${c.bundleName}</div>` : ''}
+          <div class="row">
+            <div class="qty-ctrl">
+              <button onclick="changeQty('${c.key}', -1)" aria-label="Decrease quantity">&minus;</button>
+              <span>${c.qty}</span>
+              <button onclick="changeQty('${c.key}', 1)" aria-label="Increase quantity">&plus;</button>
+            </div>
+            <span class="mono">$${(c.price * c.qty).toFixed(2)}</span>
+          </div>
+          <button class="remove-link" onclick="removeItem('${c.key}')">Remove</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  const subtotal = cart.reduce((a,c)=>a + c.price*c.qty, 0);
+  document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+  document.getElementById('total').textContent = `$${subtotal.toFixed(2)}`;
+  document.getElementById('emptyCartNote').style.display = cart.length === 0 ? 'block' : 'none';
+  renderPayPalButtons();
+}
+
+function toggleCart(open){
+  document.getElementById('cartDrawer').classList.toggle('open', open);
+  document.getElementById('overlay').classList.toggle('open', open);
+}
+
+function renderPayPalButtons(){
+  const container = document.getElementById('paypal-button-container');
+  if(!container) return;
+  container.innerHTML = '';
+
+  if(cart.length === 0) return;
+  if(typeof paypal === 'undefined'){
+    // The PayPal SDK script didn't load — usually means no internet
+    // connection, since this button requires PayPal's servers to work.
+    container.innerHTML = '<p style="color:var(--paper-dim); font-size:12px;">Checkout requires an internet connection.</p>';
+    return;
+  }
+
+  const total = cart.reduce((a,c)=>a + c.price*c.qty, 0).toFixed(2);
+
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
+    createOrder: function(data, actions){
+      return actions.order.create({
+        purchase_units: [{
+          description: 'Ringside Legacy Collectibles order',
+          amount: { value: total }
+        }]
+      });
+    },
+    onApprove: function(data, actions){
+      return actions.order.capture().then(function(details){
+        const firstName = details.payer && details.payer.name ? details.payer.name.given_name : 'there';
+        cart = [];
+        renderCart();
+        toggleCart(false);
+        showToast(`Payment complete — thanks, ${firstName}!`);
+      });
+    },
+    onError: function(err){
+      console.error('PayPal checkout error:', err);
+      showToast('Payment error — please try again');
+    },
+    onCancel: function(){
+      showToast('Checkout canceled — your cart is still saved');
+    }
+  }).render('#paypal-button-container');
+}
+
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2600);
+}
+
+renderFilters();
+renderProducts();
+renderCart();
+renderWishlistDrawer();
+renderBundles();
+document.getElementById('marqueeArt').innerHTML = avatarSVG(cardHue('p1'));
+</script>
+
+</body>
+</html>
